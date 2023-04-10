@@ -2,8 +2,11 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.Icon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -36,8 +39,7 @@ public class MainApplicationFrame extends JFrame {
 
     setContentPane(desktopPane);
 
-    LogWindow logWindow = createLogWindow();
-    addWindow(logWindow);
+    addWindow(createLogWindow());
 
     GameWindow gameWindow = new GameWindow();
     gameWindow.setSize(400, 400);
@@ -91,25 +93,32 @@ public class MainApplicationFrame extends JFrame {
 //        return menuBar;
 //    }
 
+  protected JMenuItem generateJMenuItem(String text, int key, ActionListener action) {
+
+    JMenuItem jmenuItem = new JMenuItem(text, key);
+    jmenuItem.addActionListener(action);
+    return jmenuItem;
+  }
+
   protected JMenu generateLookAndFeelMenu() {
     JMenu lookAndFeelMenu = new JMenu("Режим отображения");
     lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
     lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
         "Управление режимом отображения приложения");
 
-    JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
-    systemLookAndFeel.addActionListener((event) -> {
-      setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      this.invalidate();
-    });
+    JMenuItem systemLookAndFeel = generateJMenuItem("Системная схема", KeyEvent.VK_S,
+        (event) -> {
+          setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          this.invalidate();
+        });
 
     lookAndFeelMenu.add(systemLookAndFeel);
 
-    JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
-    crossplatformLookAndFeel.addActionListener((event) -> {
-      setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-      this.invalidate();
-    });
+    JMenuItem crossplatformLookAndFeel = generateJMenuItem("Универсальная схема", KeyEvent.VK_S,
+        (event) -> {
+          setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+          this.invalidate();
+        });
 
     lookAndFeelMenu.add(crossplatformLookAndFeel);
 
@@ -122,10 +131,10 @@ public class MainApplicationFrame extends JFrame {
     testMenu.getAccessibleContext().setAccessibleDescription(
         "Тестовые команды");
 
-    JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-    addLogMessageItem.addActionListener((event) -> {
-      Logger.debug("Новая строка");
-    });
+    JMenuItem addLogMessageItem = generateJMenuItem("Сообщение в лог", KeyEvent.VK_S,
+        (event) -> {
+          Logger.debug("Новая строка");
+        });
 
     testMenu.add(addLogMessageItem);
 
@@ -140,17 +149,17 @@ public class MainApplicationFrame extends JFrame {
     UIManager.put("OptionPane.yesButtonText", "Да");
     UIManager.put("OptionPane.noButtonText", "Нет");
 
-    JMenuItem acceptOfExit = new JMenuItem("Выход из игры", KeyEvent.VK_P);
-    acceptOfExit.addActionListener((event) -> {
-      int result = JOptionPane.showConfirmDialog(null,
-          "Вы действительно хотите выйти?",
-          "Подтверждение выхода...",
-          JOptionPane.YES_NO_OPTION,
-          JOptionPane.WARNING_MESSAGE);
-      if (result == JOptionPane.YES_OPTION) {
-        System.exit(0);
-      }
-    });
+    JMenuItem acceptOfExit = generateJMenuItem("Выход из игры", KeyEvent.VK_P,
+        (event) -> {
+          int result = JOptionPane.showConfirmDialog(null,
+              "Вы действительно хотите выйти?",
+              "Подтверждение выхода...",
+              JOptionPane.YES_NO_OPTION,
+              JOptionPane.WARNING_MESSAGE);
+          if (result == JOptionPane.YES_OPTION) {
+            System.exit(0);
+          }
+        });
 
     exitMenu.add(acceptOfExit);
 
@@ -159,13 +168,10 @@ public class MainApplicationFrame extends JFrame {
 
   private JMenuBar generateMenuBar() {
     JMenuBar menuBar = new JMenuBar();
-    JMenu lookAndFeelMenu = generateLookAndFeelMenu();
-    JMenu testMenu = generateTestMenu();
-    JMenu exitMenu = generateExitMenu();
 
-    menuBar.add(lookAndFeelMenu);
-    menuBar.add(testMenu);
-    menuBar.add(exitMenu);
+    menuBar.add(generateLookAndFeelMenu());
+    menuBar.add(generateTestMenu());
+    menuBar.add(generateExitMenu());
     return menuBar;
   }
 
