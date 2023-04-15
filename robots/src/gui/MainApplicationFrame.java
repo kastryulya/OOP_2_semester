@@ -1,11 +1,15 @@
 package gui;
 
+import Locale.LanguageAdapter;
+import com.sun.java.accessibility.util.Translator;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.swing.Icon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -28,9 +32,11 @@ public class MainApplicationFrame extends JFrame {
 
   private final JDesktopPane desktopPane = new JDesktopPane();
 
-  public MainApplicationFrame() {
+  public MainApplicationFrame(LanguageAdapter adapter) {
     //Make the big window be indented 50 pixels from each edge
     //of the screen.
+    adapter.setLanguage();
+
     int inset = 50;
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     setBounds(inset, inset,
@@ -41,9 +47,7 @@ public class MainApplicationFrame extends JFrame {
 
     addWindow(createLogWindow());
 
-    GameWindow gameWindow = new GameWindow();
-    gameWindow.setSize(400, 400);
-    addWindow(gameWindow);
+    addWindow(new GameWindow(), 400, 400);
 
     setJMenuBar(generateMenuBar());
     setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -64,34 +68,10 @@ public class MainApplicationFrame extends JFrame {
     frame.setVisible(true);
   }
 
-//    protected JMenuBar createMenuBar() {
-//        JMenuBar menuBar = new JMenuBar();
-//
-//        //Set up the lone menu.
-//        JMenu menu = new JMenu("Document");
-//        menu.setMnemonic(KeyEvent.VK_D);
-//        menuBar.add(menu);
-//
-//        //Set up the first menu item.
-//        JMenuItem menuItem = new JMenuItem("New");
-//        menuItem.setMnemonic(KeyEvent.VK_N);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_N, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("new");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-//
-//        //Set up the second menu item.
-//        menuItem = new JMenuItem("Quit");
-//        menuItem.setMnemonic(KeyEvent.VK_Q);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_Q, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("quit");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-//
-//        return menuBar;
-//    }
+  protected void addWindow(JInternalFrame frame, int weight, int height) {
+    frame.setSize(weight, height);
+    addWindow(frame);
+  }
 
   protected JMenuItem generateJMenuItem(String text, int key, ActionListener action) {
 
@@ -106,21 +86,17 @@ public class MainApplicationFrame extends JFrame {
     lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
         "Управление режимом отображения приложения");
 
-    JMenuItem systemLookAndFeel = generateJMenuItem("Системная схема", KeyEvent.VK_S,
+    lookAndFeelMenu.add(generateJMenuItem("Системная схема", KeyEvent.VK_S,
         (event) -> {
           setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
           this.invalidate();
-        });
+        }));
 
-    lookAndFeelMenu.add(systemLookAndFeel);
-
-    JMenuItem crossplatformLookAndFeel = generateJMenuItem("Универсальная схема", KeyEvent.VK_S,
+    lookAndFeelMenu.add(generateJMenuItem("Универсальная схема", KeyEvent.VK_S,
         (event) -> {
           setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
           this.invalidate();
-        });
-
-    lookAndFeelMenu.add(crossplatformLookAndFeel);
+        }));
 
     return lookAndFeelMenu;
   }
@@ -131,12 +107,10 @@ public class MainApplicationFrame extends JFrame {
     testMenu.getAccessibleContext().setAccessibleDescription(
         "Тестовые команды");
 
-    JMenuItem addLogMessageItem = generateJMenuItem("Сообщение в лог", KeyEvent.VK_S,
+    testMenu.add(generateJMenuItem("Сообщение в лог", KeyEvent.VK_S,
         (event) -> {
           Logger.debug("Новая строка");
-        });
-
-    testMenu.add(addLogMessageItem);
+        }));
 
     return testMenu;
   }
@@ -146,10 +120,7 @@ public class MainApplicationFrame extends JFrame {
 
     exitMenu.setMnemonic(KeyEvent.VK_L);
 
-    UIManager.put("OptionPane.yesButtonText", "Да");
-    UIManager.put("OptionPane.noButtonText", "Нет");
-
-    JMenuItem acceptOfExit = generateJMenuItem("Выход из игры", KeyEvent.VK_P,
+    exitMenu.add(generateJMenuItem("Выход из игры", KeyEvent.VK_P,
         (event) -> {
           int result = JOptionPane.showConfirmDialog(null,
               "Вы действительно хотите выйти?",
@@ -159,9 +130,7 @@ public class MainApplicationFrame extends JFrame {
           if (result == JOptionPane.YES_OPTION) {
             System.exit(0);
           }
-        });
-
-    exitMenu.add(acceptOfExit);
+        }));
 
     return exitMenu;
   }
