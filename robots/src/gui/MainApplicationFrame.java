@@ -1,20 +1,14 @@
 package gui;
 
 import Locale.LanguageAdapter;
-import com.sun.java.accessibility.util.Translator;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import java.beans.PropertyVetoException;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import javax.swing.Icon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -44,28 +38,27 @@ public class MainApplicationFrame extends JFrame {
 
     setContentPane(desktopPane);
 
-    addWindow(this.logWindow);
-
-    addWindow(this.gameWindow);
-
     setJMenuBar(generateMenuBar());
     setDefaultCloseOperation(EXIT_ON_CLOSE);
   }
 
   protected LogWindow createLogWindow(boolean restoreFromBackup) {
-    LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), restoreFromBackup);
-
-    if (restoreFromBackup) {
-      logWindow.setLocation();
-      setMinimumSize(logWindow.getSize());
-      logWindow.pack();
+    LogWindow logWindow;
+    if (restoreFromBackup){
+      logWindow = new LogWindowRestored(Logger.getDefaultLogSource());
     } else {
-      logWindow.setLocation(10, 10);
-      logWindow.setSize(300, 800);
-      setMinimumSize(logWindow.getSize());
-      logWindow.pack();
-      Logger.debug("Протокол работает");
+      logWindow = new LogWindow(Logger.getDefaultLogSource());
     }
+
+    desktopPane.add(logWindow);
+    logWindow.setVisible(true);
+
+    logWindow.setLocation();
+    logWindow.setSize();
+    setMinimumSize(logWindow.getSize());
+    logWindow.pack();
+
+    Logger.debug("Протокол работает");
 
     try {
       logWindow.setIcon(logWindow.getStateIcon());
@@ -76,28 +69,25 @@ public class MainApplicationFrame extends JFrame {
   }
 
   protected GameWindow createGameWindow(boolean restoreFromBackup) {
-    GameWindow gameWindow = new GameWindow(restoreFromBackup);
-
-    if (restoreFromBackup) {
-      try {
-        gameWindow.setIcon(gameWindow.getStateIcon());
-      } catch (PropertyVetoException e) {
-        throw new RuntimeException(e);
-      }
-      gameWindow.setLocation();
-      gameWindow.setSize(gameWindow.getDimension());
-      gameWindow.pack();
+    GameWindow gameWindow;
+    if (restoreFromBackup){
+      gameWindow = new GameWindowRestored();
     } else {
-      gameWindow.setSize(400, 400);
-      gameWindow.setLocation(20, 20);
+      gameWindow = new GameWindow();
     }
-    setMinimumSize(gameWindow.getSize());
-    return gameWindow;
-  }
 
-  protected void addWindow(JInternalFrame frame) {
-    desktopPane.add(frame);
-    frame.setVisible(true);
+    desktopPane.add(gameWindow);
+    gameWindow.setVisible(true);
+
+    gameWindow.setSize();
+    gameWindow.setLocation();
+    setMinimumSize(gameWindow.getSize());
+
+    try {
+      gameWindow.setIcon(gameWindow.getStateIcon());
+    } catch (PropertyVetoException ignored) {
+    }
+    return gameWindow;
   }
 
   protected JMenuItem generateJMenuItem(String text, int key, ActionListener action) {
