@@ -24,6 +24,7 @@ public class MainApplicationFrame extends JFrame {
   private final JDesktopPane desktopPane = new JDesktopPane();
   private final LogWindow logWindow = createLogWindow(true);
   private final GameWindow gameWindow = createGameWindow(true);
+  private final RobotCoordinatesWindow robotCoordinatesWindow = createRobotCoordinatesWindow();
 
   public MainApplicationFrame(LanguageAdapter adapter) {
     //Make the big window be indented 50 pixels from each edge
@@ -40,6 +41,21 @@ public class MainApplicationFrame extends JFrame {
 
     setJMenuBar(generateMenuBar());
     setDefaultCloseOperation(EXIT_ON_CLOSE);
+  }
+  protected RobotCoordinatesWindow createRobotCoordinatesWindow(){
+    RobotCoordinatesWindow robotCoordinatesWindow = new RobotCoordinatesWindow(gameWindow);
+
+    desktopPane.add(robotCoordinatesWindow);
+    robotCoordinatesWindow.setVisible(true);
+
+//    robotCoordinatesWindow.setLocation(10+200,10+100);
+//    robotCoordinatesWindow.setSize(250, 130);
+
+    robotCoordinatesWindow.setLocation();
+    robotCoordinatesWindow.setSize();
+    robotCoordinatesWindow.setPreferredSize(robotCoordinatesWindow.getSize());
+    robotCoordinatesWindow.pack();
+    return robotCoordinatesWindow;
   }
 
   protected LogWindow createLogWindow(boolean restoreFromBackup) {
@@ -147,6 +163,7 @@ public class MainApplicationFrame extends JFrame {
           if (result == JOptionPane.YES_OPTION) {
             this.logWindow.saveState(this.logWindow);
             this.gameWindow.saveState(this.gameWindow);
+            this.robotCoordinatesWindow.saveState(this.robotCoordinatesWindow);
             System.exit(0);
           }
         }));

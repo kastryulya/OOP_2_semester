@@ -21,6 +21,7 @@ public class LogWindow extends WindowWithPathState implements LogChangeListener,
   public LogWindow(LogWindowSource logSource) {
     super("Протокол работы", true, true, true, true,
         System.getProperty("user.home") + File.separator + "dataLogWindow.bin");
+
     m_logSource = logSource;
     m_logSource.registerListener(this);
 

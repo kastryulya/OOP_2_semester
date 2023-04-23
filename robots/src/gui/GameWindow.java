@@ -15,10 +15,14 @@ public class GameWindow extends WindowWithPathState implements ObjectWithState, 
     super("Игровое поле", true, true, true, true,
         System.getProperty("user.home") + File.separator + "dataGameWindow.bin");
     m_visualizer = new GameVisualizer();
+
     JPanel panel = new JPanel(new BorderLayout());
     panel.add(m_visualizer, BorderLayout.CENTER);
     getContentPane().add(panel);
     pack();
+  }
+  public GameModel getM_model(){
+    return m_visualizer.getM_gameModel();
   }
 
   public void setSize() {
