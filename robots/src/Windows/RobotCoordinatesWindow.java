@@ -1,8 +1,8 @@
-package gui;
+package Windows;
 
+import Game.GameModel;
 import Save.WindowWithPathState;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
@@ -17,19 +17,15 @@ public class RobotCoordinatesWindow extends WindowWithPathState implements Obser
   public RobotCoordinatesWindow(GameWindow gameWindow) {
     super("Координаты робота", true, true, true, true,
         System.getProperty("user.home") + File.separator + "RobotCoordinatesWindow.bin");
+
     m_gameModel = gameWindow.getM_model();
     m_gameModel.addObserver(this);
 
     JPanel panel = new JPanel(new BorderLayout());
-
-    m_textField.setPreferredSize(new Dimension(250, 80));
-
-    restoreState();
     panel.add(m_textField, BorderLayout.CENTER);
 
     JPanel buttonsPanel = new JPanel(new BorderLayout());
     panel.add(buttonsPanel, BorderLayout.SOUTH);
-
     getContentPane().add(panel);
     pack();
   }
@@ -45,5 +41,9 @@ public class RobotCoordinatesWindow extends WindowWithPathState implements Obser
 
   private void onRobotPositionChanged() {
     m_textField.setText(m_gameModel.getText());
+  }
+
+  public void setSize() {
+    setSize(400, 400);
   }
 }

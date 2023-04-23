@@ -1,6 +1,5 @@
-package gui;
+package Windows;
 
-import Save.ObjectWithState;
 import Save.WindowWithPathState;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -13,7 +12,7 @@ import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
 
-public class LogWindow extends WindowWithPathState implements LogChangeListener, ObjectWithState {
+public class LogWindow extends WindowWithPathState implements LogChangeListener {
 
   private final LogWindowSource m_logSource;
   private final TextArea m_logContent;
@@ -27,6 +26,7 @@ public class LogWindow extends WindowWithPathState implements LogChangeListener,
 
     m_logContent = new TextArea("");
     m_logContent.setSize(200, 500);
+
     JPanel panel = new JPanel(new BorderLayout());
     panel.add(m_logContent, BorderLayout.CENTER);
     getContentPane().add(panel);
@@ -34,7 +34,7 @@ public class LogWindow extends WindowWithPathState implements LogChangeListener,
     updateLogContent();
   }
 
-  private void updateLogContent() {
+  void updateLogContent() {
     StringBuilder content = new StringBuilder();
     for (LogEntry entry : m_logSource.all()) {
       content.append(entry.getMessage()).append("\n");

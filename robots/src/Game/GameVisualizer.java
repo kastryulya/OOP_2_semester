@@ -1,10 +1,11 @@
-package gui;
+package Game;
 
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -17,6 +18,8 @@ public class GameVisualizer extends JPanel {
 
   private final Timer m_timer = initTimer();
   private final GameModel m_gameModel;
+  private int width;
+  private int height;
 
   private static Timer initTimer() {
     Timer timer = new Timer("events generator", true);
@@ -34,13 +37,17 @@ public class GameVisualizer extends JPanel {
     m_timer.schedule(new TimerTask() {
       @Override
       public void run() {
-        m_gameModel.onModelUpdateEvent();
+        m_gameModel.onModelUpdateEvent(width, height);
       }
     }, 0, 5);
     addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {
-        m_gameModel.setTargetPosition(e.getPoint());
+        Point point = e.getPoint();
+        double scale = Toolkit.getDefaultToolkit().getScreenResolution() / 224.0;
+        point.x = (int) (point.x / scale);
+        point.y = (int) (point.y / scale);
+        m_gameModel.setTargetPosition(point);
         repaint();
       }
     });
@@ -99,5 +106,13 @@ public class GameVisualizer extends JPanel {
     fillOval(g, x, y, 5, 5);
     g.setColor(Color.BLACK);
     drawOval(g, x, y, 5, 5);
+  }
+
+  public void setTempWidth(int width) {
+    this.width = width;
+  }
+
+  public void setTempHeight(int height) {
+    this.height = height;
   }
 }

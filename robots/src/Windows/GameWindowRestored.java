@@ -1,4 +1,4 @@
-package gui;
+package Windows;
 
 public class GameWindowRestored extends GameWindow {
 
