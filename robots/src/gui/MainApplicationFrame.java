@@ -29,7 +29,7 @@ public class MainApplicationFrame extends JFrame {
 
   private final JDesktopPane desktopPane = new JDesktopPane();
   private final LogWindow logWindow = createLogWindow(true);
-  private final GameWindow gameWindow = createGameWindow(true);
+  private final GameWindow gameWindow = createGameWindow(false);
   private final RobotCoordinatesWindow robotCoordinatesWindow = createRobotCoordinatesWindow(true);
 
   public MainApplicationFrame(LanguageAdapter adapter) {

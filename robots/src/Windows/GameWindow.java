@@ -32,8 +32,8 @@ public class GameWindow extends WindowWithPathState implements Serializable {
     m_timer.schedule(new TimerTask() {
       @Override
       public void run() {
-        m_visualizer.setTempWidth(getWidth());
-        m_visualizer.setTempHeight(getHeight());
+        m_visualizer.setTempWidth(panel.getWidth() * 2);
+        m_visualizer.setTempHeight(panel.getHeight() * 2);
       }
     }, 0, 1);
   }
