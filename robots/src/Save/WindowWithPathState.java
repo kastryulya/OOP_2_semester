@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -43,17 +44,19 @@ public class WindowWithPathState extends JInternalFrame implements ObjectWithSta
     return this.dimension;
   }
 
-  @Override
-  public void saveState(JInternalFrame window) {
-    String path = getPath();
+  public static boolean isFileExists(File file) {
+    return file.isFile();
+  }
 
-    try (OutputStream os = new FileOutputStream(path)) {
+  @Override
+  public void saveState() {
+    try (OutputStream os = new FileOutputStream(getPath())) {
       try (ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(os))) {
-        Point point = window.getLocation();
+        Point point = this.getLocation();
         oos.writeObject(point.x);
         oos.writeObject(point.y);
-        oos.writeObject(window.isIcon());
-        oos.writeObject(window.getSize());
+        oos.writeObject(this.isIcon());
+        oos.writeObject(this.getSize());
         oos.flush();
       }
     } catch (IOException ex) {
@@ -64,17 +67,26 @@ public class WindowWithPathState extends JInternalFrame implements ObjectWithSta
   @Override
   public void restoreState() {
     String path = getPath();
-    try (InputStream is = new FileInputStream(path)) {
-      try (ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(is))) {
-        this.x = (int) ois.readObject();
-        this.y = (int) ois.readObject();
-        this.isIcon = (boolean) ois.readObject();
-        this.dimension = (Dimension) ois.readObject();
-      } catch (ClassNotFoundException ex) {
+    File file = new File(path);
+
+    if (!isFileExists(file)) {
+      this.x = 50;
+      this.y = 50;
+      this.isIcon = false;
+      this.dimension = new Dimension(500, 300);
+    } else {
+      try (InputStream is = new FileInputStream(path)) {
+        try (ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(is))) {
+          this.x = (int) ois.readObject();
+          this.y = (int) ois.readObject();
+          this.isIcon = (boolean) ois.readObject();
+          this.dimension = (Dimension) ois.readObject();
+        } catch (ClassNotFoundException ex) {
+          ex.printStackTrace();
+        }
+      } catch (IOException ex) {
         ex.printStackTrace();
       }
-    } catch (IOException ex) {
-      ex.printStackTrace();
     }
   }
 

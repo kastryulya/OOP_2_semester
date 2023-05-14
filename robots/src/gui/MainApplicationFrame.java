@@ -2,11 +2,8 @@ package gui;
 
 import Locale.LanguageAdapter;
 import Windows.GameWindow;
-import Windows.GameWindowRestored;
 import Windows.LogWindow;
-import Windows.LogWindowRestored;
 import Windows.RobotCoordinatesWindow;
-import Windows.RobotCoordinatesWindowRestored;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
@@ -28,9 +25,9 @@ import log.Logger;
 public class MainApplicationFrame extends JFrame {
 
   private final JDesktopPane desktopPane = new JDesktopPane();
-  private final LogWindow logWindow = createLogWindow(true);
-  private final GameWindow gameWindow = createGameWindow(false);
-  private final RobotCoordinatesWindow robotCoordinatesWindow = createRobotCoordinatesWindow(true);
+  private final LogWindow logWindow = createLogWindow();
+  private final GameWindow gameWindow = createGameWindow();
+  private final RobotCoordinatesWindow robotCoordinatesWindow = createRobotCoordinatesWindow();
 
   public MainApplicationFrame(LanguageAdapter adapter) {
     //Make the big window be indented 50 pixels from each edge
@@ -49,13 +46,8 @@ public class MainApplicationFrame extends JFrame {
     setDefaultCloseOperation(EXIT_ON_CLOSE);
   }
 
-  protected RobotCoordinatesWindow createRobotCoordinatesWindow(boolean restoreFromBackup) {
-    RobotCoordinatesWindow robotCoordinatesWindow;
-    if (restoreFromBackup) {
-      robotCoordinatesWindow = new RobotCoordinatesWindowRestored(gameWindow);
-    } else {
-      robotCoordinatesWindow = new RobotCoordinatesWindow(gameWindow);
-    }
+  protected RobotCoordinatesWindow createRobotCoordinatesWindow() {
+    RobotCoordinatesWindow robotCoordinatesWindow = new RobotCoordinatesWindow(gameWindow);
 
     desktopPane.add(robotCoordinatesWindow);
     robotCoordinatesWindow.setVisible(true);
@@ -71,13 +63,8 @@ public class MainApplicationFrame extends JFrame {
     return robotCoordinatesWindow;
   }
 
-  protected LogWindow createLogWindow(boolean restoreFromBackup) {
-    LogWindow logWindow;
-    if (restoreFromBackup) {
-      logWindow = new LogWindowRestored(Logger.getDefaultLogSource());
-    } else {
-      logWindow = new LogWindow(Logger.getDefaultLogSource());
-    }
+  protected LogWindow createLogWindow() {
+    LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
 
     desktopPane.add(logWindow);
     logWindow.setVisible(true);
@@ -85,7 +72,6 @@ public class MainApplicationFrame extends JFrame {
     logWindow.setSize();
     logWindow.setLocation();
     setMinimumSize(logWindow.getSize());
-//    logWindow.pack();
 
     Logger.debug("Протокол работает");
 
@@ -97,13 +83,8 @@ public class MainApplicationFrame extends JFrame {
     return logWindow;
   }
 
-  protected GameWindow createGameWindow(boolean restoreFromBackup) {
-    GameWindow gameWindow;
-    if (restoreFromBackup) {
-      gameWindow = new GameWindowRestored();
-    } else {
-      gameWindow = new GameWindow();
-    }
+  protected GameWindow createGameWindow() {
+    GameWindow gameWindow = new GameWindow();
 
     desktopPane.add(gameWindow);
     gameWindow.setVisible(true);
@@ -174,9 +155,9 @@ public class MainApplicationFrame extends JFrame {
               JOptionPane.YES_NO_OPTION,
               JOptionPane.WARNING_MESSAGE);
           if (result == JOptionPane.YES_OPTION) {
-            this.logWindow.saveState(this.logWindow);
-            this.gameWindow.saveState(this.gameWindow);
-            this.robotCoordinatesWindow.saveState(this.robotCoordinatesWindow);
+            this.logWindow.saveState();
+            this.gameWindow.saveState();
+            this.robotCoordinatesWindow.saveState();
             System.exit(0);
           }
         }));

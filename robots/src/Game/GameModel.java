@@ -67,6 +67,7 @@ public class GameModel extends Observable {
     double distance = distance(m_targetPositionX, m_targetPositionY,
         m_robotPositionX, m_robotPositionY);
     if (distance < 0.5) {
+
       setChanged();
       notifyObservers(KEY_ROBOT_POSITION_CHANGED);
       clearChanged();

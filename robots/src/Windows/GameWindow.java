@@ -16,8 +16,7 @@ public class GameWindow extends WindowWithPathState implements Serializable {
   private final Timer m_timer = initTimer();
 
   private static Timer initTimer() {
-    Timer timer = new Timer("update size for m_visualizer", true);
-    return timer;
+    return new Timer("update size for m_visualizer", true);
   }
 
   public GameWindow() {
@@ -36,6 +35,8 @@ public class GameWindow extends WindowWithPathState implements Serializable {
         m_visualizer.setTempHeight(panel.getHeight() * 2);
       }
     }, 0, 1);
+
+    restoreState();
   }
 
   public GameModel getM_model() {
@@ -43,6 +44,6 @@ public class GameWindow extends WindowWithPathState implements Serializable {
   }
 
   public void setSize() {
-    setSize(400, 400);
+    setSize(getDimension());
   }
 }

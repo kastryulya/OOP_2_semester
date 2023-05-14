@@ -16,7 +16,7 @@ public class RobotCoordinatesWindow extends WindowWithPathState implements Obser
 
   public RobotCoordinatesWindow(GameWindow gameWindow) {
     super("Координаты робота", true, true, true, true,
-        System.getProperty("user.home") + File.separator + "RobotCoordinatesWindow.bin");
+        System.getProperty("user.home") + File.separator + "dataRobotCoordinatesWindow.bin");
 
     m_gameModel = gameWindow.getM_model();
     m_gameModel.addObserver(this);
@@ -28,6 +28,8 @@ public class RobotCoordinatesWindow extends WindowWithPathState implements Obser
     panel.add(buttonsPanel, BorderLayout.SOUTH);
     getContentPane().add(panel);
     pack();
+
+    restoreState();
   }
 
   @Override
@@ -44,6 +46,6 @@ public class RobotCoordinatesWindow extends WindowWithPathState implements Obser
   }
 
   public void setSize() {
-    setSize(400, 400);
+    setSize(getDimension());
   }
 }

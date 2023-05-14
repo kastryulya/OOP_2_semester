@@ -32,6 +32,8 @@ public class LogWindow extends WindowWithPathState implements LogChangeListener 
     getContentPane().add(panel);
     pack();
     updateLogContent();
+
+    restoreState();
   }
 
   void updateLogContent() {
@@ -50,6 +52,6 @@ public class LogWindow extends WindowWithPathState implements LogChangeListener 
 
 
   public void setSize() {
-    setSize(300, 800);
+    setSize(getDimension());
   }
 }
