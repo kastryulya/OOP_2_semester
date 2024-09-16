@@ -1,36 +1,31 @@
 package gui;
 
-import Save.ObjectWithState;
-import Save.WindowWithPathState;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.TextArea;
-
 import java.io.File;
 import javax.swing.JPanel;
-
-import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
 
-public class LogWindow extends WindowWithPathState implements LogChangeListener, ObjectWithState {
+public class LogWindowRestored extends LogWindow {
 
   private final LogWindowSource m_logSource;
-  private final TextArea m_logContent;
+  private TextArea m_logContent;
 
-  public LogWindow(LogWindowSource logSource) {
-    super("Протокол работы", true, true, true, true,
-        System.getProperty("user.home") + File.separator + "dataLogWindow.bin");
+  public LogWindowRestored(LogWindowSource logSource) {
+    super(logSource);
+    setPath(System.getProperty("user.home") + File.separator + "dataLogWindow.bin");
+
     m_logSource = logSource;
     m_logSource.registerListener(this);
 
     m_logContent = new TextArea("");
-    m_logContent.setSize(200, 500);
+    restoreState();
     JPanel panel = new JPanel(new BorderLayout());
     panel.add(m_logContent, BorderLayout.CENTER);
     getContentPane().add(panel);
     pack();
-    updateLogContent();
   }
 
   private void updateLogContent() {
@@ -47,8 +42,7 @@ public class LogWindow extends WindowWithPathState implements LogChangeListener,
     EventQueue.invokeLater(this::updateLogContent);
   }
 
-
   public void setSize() {
-    setSize(300, 800);
+    m_logContent.setSize(getDimension());
   }
 }
